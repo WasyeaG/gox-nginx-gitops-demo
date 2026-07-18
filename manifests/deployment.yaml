@@ -16,11 +16,12 @@ spec:
       containers:
       - name: nginx
         image: registry.access.redhat.com/ubi9/nginx-122:latest
+        command: ["/usr/libexec/s2i/run"]
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         volumeMounts:
         - name: index
-          mountPath: /usr/share/nginx/html/index.html
+          mountPath: /opt/app-root/src/index.html
           subPath: index.html
       volumes:
       - name: index
