@@ -7,3 +7,5 @@ spec:
   to:
     kind: Service
     name: nginx
+  port:
+    targetPort: http
