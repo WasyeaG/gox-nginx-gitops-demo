@@ -1,0 +1,9 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: nginx
+  namespace: gox-nginx
+spec:
+  to:
+    kind: Service
+    name: nginx
