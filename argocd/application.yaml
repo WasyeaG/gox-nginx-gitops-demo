@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: gox-nginx
+  name: gox-nginx-demo
   namespace: openshift-gitops
 spec:
   project: default
@@ -11,7 +11,7 @@ spec:
     path: manifests
   destination:
     server: https://kubernetes.default.svc
-    namespace: gox-nginx
+    namespace: gox-nginx-demo
   syncPolicy:
     automated:
       prune: true
