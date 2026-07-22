@@ -1,10 +1,10 @@
 # GOX NGINX GitOps Demo
 
-This repository demonstrates a repeatable GitOps workflow using OpenShift GitOps (Argo CD) to deploy and manage an NGINX application on the **gox-stg** OpenShift cluster.
+This repository demonstrates a repeatable GitOps workflow using OpenShift GitOps (Argo CD) to deploy and manage an NGINX application on the **gox-prd** OpenShift cluster.
 
 ## Environment
 
-- **Cluster:** gox-stg
+- **Cluster:** gox-prd
 - **Namespace:** gox-nginx-demo
 - **Argo CD Namespace:** openshift-gitops
 - **Argo CD Application:** gox-nginx-demo
@@ -47,7 +47,7 @@ oc get route -n gox-nginx-demo
 
 Application URL:
 
-https://nginx-gox-nginx-demo.apps.gox-stg.ephemeral-ovh.dev.li9.com
+https://nginx-gox-nginx-demo.apps.gox-prd.ephemeral-ovh.dev.li9.com
 
 ## Validate GitOps Reconciliation
 
@@ -57,7 +57,7 @@ Update the ConfigMap, commit, and push changes. Verify Argo CD automatically syn
 
 ```bash
 git rm manifests/route.yaml
-git commit -m "Validate Argo CD prune on gox-stg"
+git commit -m "Validate Argo CD prune on gox-prd"
 git push origin main
 ```
 
