@@ -1,91 +1,106 @@
 # GOX NGINX GitOps Demo
 
-This repository demonstrates a repeatable GitOps workflow using OpenShift GitOps (Argo CD) to deploy and manage an NGINX application on the gox-sbx OpenShift cluster.
+This repository demonstrates a repeatable GitOps workflow using OpenShift GitOps (Argo CD) to deploy and manage an NGINX application on the **gox-stg** OpenShift cluster.
 
 ## Environment
 
-- Cluster: gox-sbx
-- Namespace: gox-nginx
-- Argo CD Namespace: openshift-gitops
-- Argo CD Application: gox-nginx
-- Git Branch: main
+- **Cluster:** gox-stg
+- **Namespace:** gox-nginx-demo
+- **Argo CD Namespace:** openshift-gitops
+- **Argo CD Application:** gox-nginx-demo
+- **Git Branch:** main
 
 ## Repository Structure
 
+```
+argocd/
+└── application.yaml
+
 manifests/
-- namespace.yaml
-- configmap.yaml
-- deployment.yaml
-- service.yaml
-- route.yaml
+├── namespace.yaml
+├── configmap.yaml
+├── deployment.yaml
+├── service.yaml
+├── route.yaml
 
-## Verify Argo CD
+README.md
+```
 
-Run:
+## Verify OpenShift GitOps
 
+```bash
 oc get pods -n openshift-gitops
-
-Verify the application:
-
-oc get application gox-nginx -n openshift-gitops
+oc get application gox-nginx-demo -n openshift-gitops
+```
 
 Expected:
+
 - Sync Status: Synced
 - Health Status: Healthy
 
 ## Verify Deployment
 
-oc get all -n gox-nginx
+```bash
+oc get all -n gox-nginx-demo
+oc get route -n gox-nginx-demo
+```
+
+Application URL:
+
+https://nginx-gox-nginx-demo.apps.gox-stg.ephemeral-ovh.dev.li9.com
 
 ## Validate GitOps Reconciliation
 
-1. Update manifests/configmap.yaml
-2. Commit and push:
-
-git add .
-git commit -m "Update application"
-git push origin main
-
-3. Verify Argo CD synchronizes the change.
+Update the ConfigMap, commit, and push changes. Verify Argo CD automatically synchronizes the updated application.
 
 ## Validate Prune
 
-Remove the Route manifest:
-
+```bash
 git rm manifests/route.yaml
-git commit -m "Validate ArgoCD prune"
+git commit -m "Validate Argo CD prune on gox-stg"
 git push origin main
+```
 
 Verify:
 
-oc get route -n gox-nginx
+```bash
+oc get route nginx -n gox-nginx-demo
+```
 
 Expected:
 
-No resources found in gox-nginx namespace.
+```
+Error from server (NotFound): routes.route.openshift.io "nginx" not found
+```
 
 ## Restore the Route
 
-git restore --source=HEAD^ -- manifests/route.yaml
+```bash
+git checkout HEAD~1 -- manifests/route.yaml
 git add manifests/route.yaml
 git commit -m "Restore Route after Argo CD prune validation"
 git push origin main
+```
 
 Verify:
 
-oc get application gox-nginx -n openshift-gitops
-oc get route -n gox-nginx
+```bash
+oc get application gox-nginx-demo -n openshift-gitops
+oc get route nginx -n gox-nginx-demo
+```
 
 Expected:
+
 - Application is Synced
 - Application is Healthy
 - Route exists again
 
 ## Validation Completed
 
-- OpenShift GitOps installed
-- Argo CD application created
-- Application reaches Synced / Healthy
-- Git changes automatically reconciled
+- OpenShift GitOps Operator installed successfully
+- Argo CD application created and managing the local cluster
+- Application reached **Synced** and **Healthy**
+- Git changes automatically reconciled by Argo CD
+- Browser validation confirmed **Version 2 - GitOps Update**
 - Prune behavior validated
 - Restore behavior validated
